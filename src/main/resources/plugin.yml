@@ -1,0 +1,4 @@
+name: PlayerManagement
+version: '0.0.1'
+main: me.maxallgaier.playermanagement.PlayerManagementPlugin
+api-version: '1.21'
