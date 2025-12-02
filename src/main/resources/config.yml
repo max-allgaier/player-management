@@ -1,9 +1,18 @@
 database:
   type: "postgres"
-  host: "localhost"
-  port: 5432
-  database-name: "player_management"
-  username: "postgres"
+  host: "host"
+  port: 12345
+  database-name: "database_name"
+  username: "username"
   password: "password"
+
+duration:
+  keywords:
+    permanent: ["permanently", "permanent", "perm"]
+    day: ["days", "day", "d"]
+    hour: ["hours", "hour", "hrs", "hr"]
+    minute: ["minutes", "minute", "mins", "min", "m"]
+    second: ["seconds", "second", "secs", "sec", "s"]
+  suggestions: ["permanent", "365days", "30days", "1day", "12hours", "6hours", "30minutes"]
 
 version: "0.0.1"

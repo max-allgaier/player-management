@@ -7,6 +7,8 @@ public interface Config {
 
     DatabaseConfig databaseConfig();
 
+    DurationConfig durationConfig();
+
     default boolean isUpToDate() {
         return this.version().equals(CURRENT_VERSION);
     }
