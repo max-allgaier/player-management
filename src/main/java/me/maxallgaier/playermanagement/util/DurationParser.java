@@ -5,6 +5,7 @@ import lombok.NonNull;
 import me.maxallgaier.playermanagement.config.DurationConfig;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public final class DurationParser {
@@ -41,5 +42,22 @@ public final class DurationParser {
         }
 
         return Duration.ofDays(days).plusHours(hours).plusMinutes(minutes).plusSeconds(seconds);
+    }
+
+    public String toReadableString(Duration duration) {
+        if (duration == null) return this.durationConfig.permanentDisplay();
+        var stringBuilder = new StringBuilder();
+        this.appendTimeUnit(stringBuilder, duration.toDaysPart(), TimeUnit.DAYS);
+        this.appendTimeUnit(stringBuilder, duration.toHoursPart(), TimeUnit.HOURS);
+        this.appendTimeUnit(stringBuilder, duration.toMinutesPart(), TimeUnit.MINUTES);
+        this.appendTimeUnit(stringBuilder, duration.toSecondsPart(), TimeUnit.SECONDS);
+        var readableString = stringBuilder.toString().trim();
+        return readableString.isEmpty() ? "0 " + this.durationConfig.timeUnitDisplay(TimeUnit.SECONDS, true) : readableString;
+    }
+
+    private void appendTimeUnit(StringBuilder stringBuilder, long amount, TimeUnit timeUnit) {
+        if (amount == 0) return;
+        stringBuilder.append(" ").append(amount).append(" ")
+            .append(this.durationConfig.timeUnitDisplay(timeUnit, amount != 1));
     }
 }

@@ -5,6 +5,7 @@ import me.maxallgaier.playermanagement.config.DurationConfig;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public final class YamlDurationConfig implements DurationConfig {
     private final ConfigurationSection yamlConfig;
@@ -41,5 +42,22 @@ public final class YamlDurationConfig implements DurationConfig {
     @Override
     public List<String> suggestions() {
         return this.yamlConfig.getStringList("suggestions");
+    }
+
+    @Override
+    public String permanentDisplay() {
+        return this.yamlConfig.getString("display.permanent");
+    }
+
+    @Override
+    public String timeUnitDisplay(TimeUnit timeUnit, boolean plural) {
+        var unitName = switch (timeUnit) {
+            case SECONDS -> "second";
+            case MINUTES -> "minute";
+            case HOURS -> "hour";
+            case DAYS -> "day";
+            default -> throw new RuntimeException("unsupported time unit: " + timeUnit);
+        };
+        return this.yamlConfig.getString("display." + unitName + (plural ? "-plural" : "-singular"));
     }
 }

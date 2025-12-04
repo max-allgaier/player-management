@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +27,8 @@ class DurationParserTest {
             @Override public List<String> minuteKeywords() { return List.of("minutes", "minute", "mins", "min", "m"); }
             @Override public List<String> secondKeywords() { return List.of("seconds", "second", "secs", "sec", "s"); }
             @Override public List<String> suggestions() { throw new RuntimeException("not implemented"); }
+            @Override public String permanentDisplay() { throw new RuntimeException("not implemented"); }
+            @Override public String timeUnitDisplay(TimeUnit timeUnit, boolean plural) { throw new RuntimeException("not implemented"); }
         };
         durationParser = new DurationParser(durationConfig);
     }

@@ -1,6 +1,7 @@
 package me.maxallgaier.playermanagement.config;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public interface DurationConfig {
     List<String> permanentKeywords();
@@ -14,4 +15,8 @@ public interface DurationConfig {
     List<String> secondKeywords();
 
     List<String> suggestions();
+
+    String permanentDisplay();
+
+    String timeUnitDisplay(TimeUnit timeUnit, boolean plural);
 }

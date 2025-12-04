@@ -9,6 +9,8 @@ public interface Config {
 
     DurationConfig durationConfig();
 
+    MessagesConfig messagesConfig();
+
     default boolean isUpToDate() {
         return this.version().equals(CURRENT_VERSION);
     }
