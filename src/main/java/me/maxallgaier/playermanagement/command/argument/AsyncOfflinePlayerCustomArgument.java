@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -20,26 +21,21 @@ public final class AsyncOfflinePlayerCustomArgument extends CustomArgument<Compl
 
     public AsyncOfflinePlayerCustomArgument(String name) {
         super(new StringArgument(name), AsyncOfflinePlayerCustomArgument::execute);
-        super.replaceSuggestions(ArgumentSuggestions.strings(AsyncOfflinePlayerCustomArgument::suggestions));
+        super.replaceSuggestions(ArgumentSuggestions.stringCollection(AsyncOfflinePlayerCustomArgument::suggestions));
     }
 
     private static CompletableFuture<OfflinePlayer> execute(CustomArgumentInfo<String> info) throws CustomArgumentException {
         String usernameInput = info.currentInput();
         if (MC_USERNAME_PATTERN.matcher(usernameInput).matches()) {
-            return asyncFindOfflinePlayer(usernameInput);
+            var executorService = PlayerManagementPlugin.instance().serviceManager().virtualThreadExecutorService();
+            return CompletableFuture.supplyAsync(() -> Bukkit.getOfflinePlayer(usernameInput), executorService);
         } else {
             throw CustomArgument.CustomArgumentException.fromString("invalid username provided");
         }
     }
 
-    private static CompletableFuture<OfflinePlayer> asyncFindOfflinePlayer(String username) {
-        var executorService = PlayerManagementPlugin.getInstance().getServiceManager().getVirtualThreadExecutorService();
-        return CompletableFuture.supplyAsync(() -> Bukkit.getOfflinePlayer(username), executorService);
-    }
-
-    private static String[] suggestions(SuggestionInfo<CommandSender> info) {
+    private static List<String> suggestions(SuggestionInfo<CommandSender> info) {
         var onlinePlayers = Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
-        return StringUtil.copyPartialMatches(info.currentArg(), onlinePlayers, new ArrayList<>())
-            .toArray(new String[0]);
+        return StringUtil.copyPartialMatches(info.currentArg(), onlinePlayers, new ArrayList<>());
     }
 }

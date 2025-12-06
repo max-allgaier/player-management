@@ -14,7 +14,7 @@ public final class ServiceManager {
     @Getter private final ExecutorService virtualThreadExecutorService = Executors.newVirtualThreadPerTaskExecutor();
 
     public ServiceManager(ConfigManager configManager) {
-        var dbConfig = configManager.getConfig().databaseConfig();
+        var dbConfig = configManager.config().databaseConfig();
         var dbType = dbConfig.databaseType().toLowerCase();
         if ("postgres".equals(dbType)) {
             var pgDatabaseHelper = new PostgresDatabaseHelper(dbConfig);

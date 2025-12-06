@@ -8,19 +8,19 @@ import me.maxallgaier.playermanagement.PlayerManagementPlugin;
 import org.bukkit.command.CommandSender;
 
 import java.time.Duration;
+import java.util.List;
 
 public final class DurationCustomArgument extends CustomArgument<Duration, String> {
     public DurationCustomArgument(String name) {
         super(new StringArgument(name), DurationCustomArgument::execute);
-        super.replaceSuggestions(ArgumentSuggestions.strings(DurationCustomArgument::suggestions));
+        super.replaceSuggestions(ArgumentSuggestions.stringCollection(DurationCustomArgument::suggestions));
     }
 
     private static Duration execute(CustomArgumentInfo<String> info) {
-        return PlayerManagementPlugin.getInstance().getDurationParser().fromString(info.currentInput());
+        return PlayerManagementPlugin.instance().durationParser().fromString(info.currentInput());
     }
 
-    private static String[] suggestions(SuggestionInfo<CommandSender> info) {
-        var durationConfig = PlayerManagementPlugin.getInstance().getConfigManager().getConfig().durationConfig();
-        return durationConfig.suggestions().toArray(new String[0]);
+    private static List<String> suggestions(SuggestionInfo<CommandSender> info) {
+        return PlayerManagementPlugin.instance().configManager().config().durationConfig().suggestions();
     }
 }

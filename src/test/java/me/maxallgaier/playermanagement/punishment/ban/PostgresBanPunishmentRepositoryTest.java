@@ -42,16 +42,20 @@ class PostgresBanPunishmentRepositoryTest {
     @Test
     void create_findById_update__workForAllValidValuesWithEdgeCaseValues() {
         var minValidInfoBan = BanPunishment.builder().targetId(UUID.randomUUID())
-            .issuedDateTime(OffsetDateTime.now().withYear(1971)).build(); // Epoch time starts 1970, Jan 1.
+            .issuedDateTime(OffsetDateTime.now().withYear(1971)) // Epoch time starts 1970, Jan 1.
+            .build();
         var minValidInfoBanUpdated = BanPunishment.builder().targetId(UUID.randomUUID())
-            .issuedDateTime(OffsetDateTime.now().plusYears(100_000)).build();
+            .issuedDateTime(OffsetDateTime.now().plusYears(100_000))
+            .build();
         var maxValidInfoBan = BanPunishment.builder().targetId(UUID.randomUUID()).targetId(UUID.randomUUID())
             .issuerId(UUID.randomUUID()).reason("reason 123").issuedDateTime(OffsetDateTime.now())
             .duration(Duration.ofDays(365 * 100_000))
-            .pardoned(true).pardonerId(UUID.randomUUID()).pardonReason("reason 321").build();
+            .pardoned(true).pardonerId(UUID.randomUUID()).pardonReason("reason 321")
+            .build();
         var maxValidInfoBanUpdated = BanPunishment.builder().targetId(UUID.randomUUID()).targetId(UUID.randomUUID())
             .issuerId(UUID.randomUUID()).reason("new reason 123").issuedDateTime(OffsetDateTime.now().plusSeconds(10))
-            .pardoned(true).pardonerId(UUID.randomUUID()).pardonReason("new reason 321").build();
+            .pardoned(true).pardonerId(UUID.randomUUID()).pardonReason("new reason 321")
+            .build();
         var mapOfBanToUpdatedBan =
             Map.of(minValidInfoBan, minValidInfoBanUpdated, maxValidInfoBan, maxValidInfoBanUpdated);
         for (var entrySet : mapOfBanToUpdatedBan.entrySet()) {
@@ -80,7 +84,8 @@ class PostgresBanPunishmentRepositoryTest {
         var fakeId = UUID.randomUUID();
         var fakeRegisteredBan = BanPunishment.builder().id(fakeId).targetId(UUID.randomUUID())
             .issuerId(UUID.randomUUID()).reason("reason").issuedDateTime(OffsetDateTime.now())
-            .duration(Duration.ofHours(9999)).build();
+            .duration(Duration.ofHours(9999))
+            .build();
         assertThrows(Exception.class, () -> repository.create(fakeRegisteredBan));
         assertTrue(repository.findById(fakeId).isEmpty());
     }

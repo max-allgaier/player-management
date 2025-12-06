@@ -20,7 +20,7 @@ public final class PostgresBanPunishmentRepository implements BanPunishmentRepos
     @Override
     public Optional<BanPunishment> findById(@NonNull UUID id) {
         var sql = "SELECT * FROM ban_punishments WHERE id = :id;";
-        return this.databaseHelper.getJdbi().withHandle(handle ->
+        return this.databaseHelper.jdbi().withHandle(handle ->
             handle.createQuery(sql)
                 .bind("id", id)
                 .map(this.rowMapper::fromResultSet)
@@ -31,7 +31,7 @@ public final class PostgresBanPunishmentRepository implements BanPunishmentRepos
     @Override
     public List<BanPunishment> findByTargetId(@NonNull UUID targetId) {
         var sql = "SELECT * FROM ban_punishments WHERE target_id = :target_id ORDER BY issued_date_time DESC;";
-        return this.databaseHelper.getJdbi().withHandle(handle ->
+        return this.databaseHelper.jdbi().withHandle(handle ->
             handle.createQuery(sql)
                 .bind("target_id", targetId)
                 .map(this.rowMapper::fromResultSet)
@@ -49,7 +49,7 @@ public final class PostgresBanPunishmentRepository implements BanPunishmentRepos
             ORDER BY issued_date_time DESC
             LIMIT 1;
             """;
-        return this.databaseHelper.getJdbi().withHandle(handle ->
+        return this.databaseHelper.jdbi().withHandle(handle ->
             handle.createQuery(sql)
                 .bind("target_id", targetId)
                 .map(this.rowMapper::fromResultSet)
@@ -69,7 +69,7 @@ public final class PostgresBanPunishmentRepository implements BanPunishmentRepos
               (:target_id, :issuer_id, :reason, :issued_date_time, :duration, :pardoned, :pardoner_id, :pardon_reason)
             RETURNING id;
             """;
-        UUID id = this.databaseHelper.getJdbi().withHandle(handle ->
+        UUID id = this.databaseHelper.jdbi().withHandle(handle ->
             handle.createUpdate(sql)
                 .bindMap(this.rowMapper.toMap(banPunishment))
                 .executeAndReturnGeneratedKeys()
@@ -90,12 +90,11 @@ public final class PostgresBanPunishmentRepository implements BanPunishmentRepos
               duration = :duration, pardoned = :pardoned, pardoner_id = :pardoner_id, pardon_reason = :pardon_reason
             WHERE id = :id;
             """;
-        int updated = this.databaseHelper.getJdbi().withHandle(handle ->
+        int updated = this.databaseHelper.jdbi().withHandle(handle ->
             handle.createUpdate(sql)
                 .bindMap(this.rowMapper.toMap(banPunishment))
                 .execute()
         );
-
         if (updated == 0) {
             throw new IllegalStateException("BanPunishment not found for id " + banPunishment.id());
         }

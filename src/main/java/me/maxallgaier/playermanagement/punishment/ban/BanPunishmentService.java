@@ -4,7 +4,7 @@ import lombok.NonNull;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -25,10 +25,8 @@ public final class BanPunishmentService {
         try {
             var latestActiveBanPunishment = this.repository.findLatestActiveBanByTargetId(targetId);
             if (latestActiveBanPunishment.isPresent()) {
-                throw new IllegalStateException("target with id " + targetId +
-                    " is already banned under ban id " + latestActiveBanPunishment.get().id());
+                throw new BanException(BanException.Reason.ALREADY_BANNED);
             }
-
             var banPunishment = BanPunishment.builder()
                 .targetId(targetId).issuerId(issuerId).reason(reason).issuedDateTime(OffsetDateTime.now())
                 .duration(duration)
@@ -44,11 +42,11 @@ public final class BanPunishmentService {
         try {
             var latestUnpardonedBanPunishment = this.repository.findLatestActiveBanByTargetId(targetId);
             if (latestUnpardonedBanPunishment.isEmpty()) {
-                throw new IllegalStateException("target with id " + targetId + " is not banned");
+                throw new BanException(BanException.Reason.NOT_BANNED);
             }
-
             var updatedUnpardonedBanPunishment = latestUnpardonedBanPunishment.get().toBuilder()
-                .pardoned(true).pardonerId(pardonerId).pardonReason(reason).build();
+                .pardoned(true).pardonerId(pardonerId).pardonReason(reason)
+                .build();
             this.repository.update(updatedUnpardonedBanPunishment);
             return updatedUnpardonedBanPunishment;
         } finally {
@@ -56,10 +54,10 @@ public final class BanPunishmentService {
         }
     }
 
-    public List<BanPunishment> listBans(UUID targetId) {
+    public Optional<BanPunishment> findLatestActiveBanByTargetId(@NonNull UUID targetId) {
         this.readLock.lock();
         try {
-            return this.repository.findByTargetId(targetId);
+            return this.repository.findLatestActiveBanByTargetId(targetId);
         } finally {
             this.readLock.unlock();
         }
