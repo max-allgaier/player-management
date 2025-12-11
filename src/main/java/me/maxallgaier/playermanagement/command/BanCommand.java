@@ -3,6 +3,7 @@ package me.maxallgaier.playermanagement.command;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.TextArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
+import lombok.experimental.UtilityClass;
 import me.maxallgaier.playermanagement.PlayerManagementPlugin;
 import me.maxallgaier.playermanagement.command.argument.AsyncOfflinePlayerCustomArgument;
 import me.maxallgaier.playermanagement.command.argument.DurationCustomArgument;
@@ -16,6 +17,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
+@UtilityClass
 public final class BanCommand {
     public static void register() {
         new CommandAPICommand("ban")
@@ -38,7 +40,7 @@ public final class BanCommand {
                 execute(target, issuer, duration, reason);
             } catch (Exception e) {
                 PlayerManagementPlugin.instance().getLogger().log(Level.SEVERE, "ban", e);
-                Messages.send(issuer, PlayerManagementPlugin.instance().messagesConfig().internalError());
+                Messages.send(issuer, PlayerManagementPlugin.instance().configManager().messagesConfig().internalError());
             }
         });
     }
@@ -53,7 +55,7 @@ public final class BanCommand {
 
     private static void handleException(BanException e, OfflinePlayer target, CommandSender issuer) {
         if (e.reason() == BanException.Reason.ALREADY_BANNED) {
-            var message = PlayerManagementPlugin.instance().messagesConfig()
+            var message = PlayerManagementPlugin.instance().configManager().messagesConfig()
                 .playerAlreadyBannedError(target.getName());
             Messages.send(issuer, message);
         } else {

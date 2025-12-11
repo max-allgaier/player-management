@@ -3,6 +3,7 @@ package me.maxallgaier.playermanagement.command;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.TextArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
+import lombok.experimental.UtilityClass;
 import me.maxallgaier.playermanagement.PlayerManagementPlugin;
 import me.maxallgaier.playermanagement.command.argument.AsyncOfflinePlayerCustomArgument;
 import me.maxallgaier.playermanagement.punishment.ban.BanException;
@@ -14,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
+@UtilityClass
 public class UnbanCommand {
     public static void register() {
         new CommandAPICommand("unban")
@@ -34,7 +36,7 @@ public class UnbanCommand {
                 execute(target, issuer, reason);
             } catch (Exception e) {
                 PlayerManagementPlugin.instance().getLogger().log(Level.SEVERE, "unban", e);
-                Messages.send(issuer, PlayerManagementPlugin.instance().messagesConfig().internalError());
+                Messages.send(issuer, PlayerManagementPlugin.instance().configManager().messagesConfig().internalError());
             }
         });
     }
@@ -49,7 +51,7 @@ public class UnbanCommand {
 
     private static void handleException(BanException e, OfflinePlayer target, CommandSender issuer) {
         if (e.reason() == BanException.Reason.NOT_BANNED) {
-            String message = PlayerManagementPlugin.instance().messagesConfig()
+            String message = PlayerManagementPlugin.instance().configManager().messagesConfig()
                 .playerIsNotBannedError(target.getName());
             Messages.send(issuer, message);
         } else {

@@ -21,18 +21,23 @@ public final class BanManager {
 
     public void ban(OfflinePlayer target, CommandSender issuer, String reason, Duration duration) {
         var messageConfig = this.configManager.config().messagesConfig();
-        this.banPunishmentService.ban(target.getUniqueId(), this.toIssuerId(issuer), reason, duration);
+        var banPunishment = this.banPunishmentService.ban(target.getUniqueId(), this.toIssuerId(issuer), reason, duration);
         if (target.isOnline()) {
-            var banScreenComponent = this.toBanScreenComponent(target.getUniqueId()).get();
+            var banScreenComponent = this.toBanScreenComponent(banPunishment);
             target.getPlayer().kick(banScreenComponent);
         }
-        Messages.broadcast(messageConfig.playerBanned(target.getName(), this.toIssuerDisplayName(issuer), reason));
+        var banBroadcastComponent = messageConfig.playerBanned(target.getName(), this.toIssuerDisplayName(issuer), reason);
+        Messages.broadcast(banBroadcastComponent);
     }
 
     public void unban(OfflinePlayer target, CommandSender issuer, String reason) {
         var messageConfig = this.configManager.config().messagesConfig();
         this.banPunishmentService.unban(target.getUniqueId(), this.toIssuerId(issuer), reason);
         Messages.broadcast(messageConfig.playerBanned(target.getName(), this.toIssuerDisplayName(issuer), reason));
+    }
+
+    public Optional<BanPunishment> findLatestActiveBanByTargetId(UUID targetId) {
+        return this.banPunishmentService.findLatestActiveBanByTargetId(targetId);
     }
 
     private UUID toIssuerId(CommandSender issuer) {
@@ -44,13 +49,8 @@ public final class BanManager {
             this.configManager.config().messagesConfig().consoleDisplayName();
     }
 
-    public Optional<Component> toBanScreenComponent(UUID targetId) {
-        return this.banPunishmentService.findLatestActiveBanByTargetId(targetId)
-            .map(banPunishment -> {
-                var duration = banPunishment.durationTillExpired();
-                return this.durationParser.toReadableString(duration);
-            })
-            .map(this.configManager.config().messagesConfig()::banScreen)
-            .map(Messages::text);
+    public Component toBanScreenComponent(BanPunishment banPunishment) {
+        var readableDurationTillExpired = this.durationParser.toReadableString(banPunishment.durationTillExpired());
+        return Messages.text(this.configManager.messagesConfig().banScreen(readableDurationTillExpired));
     }
 }

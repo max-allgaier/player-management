@@ -22,4 +22,8 @@ public final class ConfigManager {
         }
         this.config = loadedConfig;
     }
+
+    public MessagesConfig messagesConfig() {
+        return this.config.messagesConfig();
+    }
 }

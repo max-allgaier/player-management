@@ -19,7 +19,7 @@ public final class PostgresBanPunishmentTableRowMapper {
             rs.getObject("issuer_id", UUID.class),
             rs.getString("reason"),
             rs.getObject("issued_date_time", OffsetDateTime.class),
-            ctx.findColumnMapperFor(Duration.class).get().map(rs, "duration", ctx),
+            ctx.findColumnMapperFor(Duration.class).orElseThrow().map(rs, "duration", ctx),
             rs.getBoolean("pardoned"),
             rs.getObject("pardoner_id", UUID.class),
             rs.getString("pardon_reason")

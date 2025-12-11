@@ -13,7 +13,9 @@ public final class ConnectionListener implements Listener {
     @EventHandler
     public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
         var targetId = event.getUniqueId();
-        this.banManager.toBanScreenComponent(targetId)
-            .ifPresent(banScreenComponent -> event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, banScreenComponent));
+        this.banManager.findLatestActiveBanByTargetId(targetId).ifPresent(banPunishment -> {
+            var banScreenComponent = this.banManager.toBanScreenComponent(banPunishment);
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, banScreenComponent);
+        });
     }
 }

@@ -35,7 +35,7 @@ messages:
   player-already-banned-error: "{target} is already banned."
   player-is-not-banned-error: "{target} is not banned."
   ban-screen: |
-    "You currently banned!"
-    "Ban duration: {duration}"
+    You currently banned!
+    Ban duration: {duration}
 
 version: "0.0.1"

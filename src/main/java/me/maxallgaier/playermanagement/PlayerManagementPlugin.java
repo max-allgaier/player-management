@@ -4,7 +4,6 @@ import lombok.Getter;
 import me.maxallgaier.playermanagement.command.BanCommand;
 import me.maxallgaier.playermanagement.command.UnbanCommand;
 import me.maxallgaier.playermanagement.config.ConfigManager;
-import me.maxallgaier.playermanagement.config.MessagesConfig;
 import me.maxallgaier.playermanagement.listener.ConnectionListener;
 import me.maxallgaier.playermanagement.punishment.ban.BanManager;
 import me.maxallgaier.playermanagement.service.ServiceManager;
@@ -37,10 +36,8 @@ public final class PlayerManagementPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (this.serviceManager != null) this.serviceManager.shutdown();
-    }
-
-    public MessagesConfig messagesConfig() {
-        return this.configManager.config().messagesConfig();
+        if (this.serviceManager != null) {
+            this.serviceManager.shutdown();
+        }
     }
 }
