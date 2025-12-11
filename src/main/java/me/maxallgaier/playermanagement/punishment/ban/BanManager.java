@@ -33,7 +33,7 @@ public final class BanManager {
     public void unban(OfflinePlayer target, CommandSender issuer, String reason) {
         var messageConfig = this.configManager.config().messagesConfig();
         this.banPunishmentService.unban(target.getUniqueId(), this.toIssuerId(issuer), reason);
-        Messages.broadcast(messageConfig.playerBanned(target.getName(), this.toIssuerDisplayName(issuer), reason));
+        Messages.broadcast(messageConfig.playerUnbanned(target.getName(), this.toIssuerDisplayName(issuer), reason));
     }
 
     public Optional<BanPunishment> findLatestActiveBanByTargetId(UUID targetId) {
