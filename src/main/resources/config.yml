@@ -46,4 +46,5 @@ messages:
     You are currently muted!
     Mute duration: {duration}
 
+# DO NOT TOUCH VERSION.
 version: "0.0.1"
