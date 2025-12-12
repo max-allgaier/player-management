@@ -1,10 +1,12 @@
 package me.maxallgaier.playermanagement.punishment.ban;
 
 import lombok.AllArgsConstructor;
+import me.maxallgaier.playermanagement.PlayerManagementPlugin;
 import me.maxallgaier.playermanagement.config.ConfigManager;
 import me.maxallgaier.playermanagement.util.DurationParser;
 import me.maxallgaier.playermanagement.util.Messages;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,23 +17,26 @@ import java.util.UUID;
 
 @AllArgsConstructor
 public final class BanManager {
+    private final PlayerManagementPlugin plugin;
     private final BanPunishmentService banPunishmentService;
     private final ConfigManager configManager;
     private final DurationParser durationParser;
 
     public void ban(OfflinePlayer target, CommandSender issuer, String reason, Duration duration) {
-        var messageConfig = this.configManager.config().messagesConfig();
+        var messageConfig = this.configManager.messagesConfig();
         var banPunishment = this.banPunishmentService.ban(target.getUniqueId(), this.toIssuerId(issuer), reason, duration);
-        if (target.isOnline()) {
-            var banScreenComponent = this.toBanScreenComponent(banPunishment);
-            target.getPlayer().kick(banScreenComponent);
-        }
+        Bukkit.getScheduler().runTask(this.plugin, () -> {
+            if (target.isOnline()) {
+                var banScreenComponent = this.toBanScreenComponent(banPunishment);
+                target.getPlayer().kick(banScreenComponent);
+            }
+        });
         var banBroadcastComponent = messageConfig.playerBanned(target.getName(), this.toIssuerDisplayName(issuer), reason);
         Messages.broadcast(banBroadcastComponent);
     }
 
     public void unban(OfflinePlayer target, CommandSender issuer, String reason) {
-        var messageConfig = this.configManager.config().messagesConfig();
+        var messageConfig = this.configManager.messagesConfig();
         this.banPunishmentService.unban(target.getUniqueId(), this.toIssuerId(issuer), reason);
         Messages.broadcast(messageConfig.playerUnbanned(target.getName(), this.toIssuerDisplayName(issuer), reason));
     }

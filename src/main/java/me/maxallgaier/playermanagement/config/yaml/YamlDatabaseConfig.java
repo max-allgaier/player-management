@@ -13,31 +13,31 @@ public final class YamlDatabaseConfig implements DatabaseConfig {
 
     @Override
     public String databaseType() {
-        return this.yamlConfig.getString("type");
+        return this.yamlConfig.getString("type", "");
     }
 
     @Override
     public String host() {
-        return this.yamlConfig.getString("host");
+        return this.yamlConfig.getString("host", "");
     }
 
     @Override
     public int port() {
-        return this.yamlConfig.getInt("port");
+        return this.yamlConfig.getInt("port", 0);
     }
 
     @Override
     public String databaseName() {
-        return this.yamlConfig.getString("database-name");
+        return this.yamlConfig.getString("database-name", "");
     }
 
     @Override
     public String username() {
-        return this.yamlConfig.getString("username");
+        return this.yamlConfig.getString("username", "");
     }
 
     @Override
     public String password() {
-        return this.yamlConfig.getString("password");
+        return this.yamlConfig.getString("password", "");
     }
 }

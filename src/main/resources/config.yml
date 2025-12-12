@@ -38,4 +38,12 @@ messages:
     You currently banned!
     Ban duration: {duration}
 
+  player-muted: "{issuer} muted {target} with reason {reason}."
+  player-unmuted: "{issuer} unmuted {target} with reason {reason}."
+  player-already-muted-error: "{target} is already muted."
+  player-is-not-muted-error: "{target} is not muted."
+  muted-message: |
+    You are currently muted!
+    Mute duration: {duration}
+
 version: "0.0.1"

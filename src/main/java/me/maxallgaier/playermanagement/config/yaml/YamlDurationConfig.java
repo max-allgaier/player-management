@@ -46,7 +46,7 @@ public final class YamlDurationConfig implements DurationConfig {
 
     @Override
     public String permanentDisplay() {
-        return this.yamlConfig.getString("display.permanent");
+        return this.yamlConfig.getString("display.permanent", "");
     }
 
     @Override
@@ -58,6 +58,6 @@ public final class YamlDurationConfig implements DurationConfig {
             case DAYS -> "day";
             default -> throw new RuntimeException("unsupported time unit: " + timeUnit);
         };
-        return this.yamlConfig.getString("display." + unitName + (plural ? "-plural" : "-singular"));
+        return this.yamlConfig.getString("display." + unitName + (plural ? "-plural" : "-singular"), "");
     }
 }

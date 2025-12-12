@@ -40,15 +40,15 @@ public final class BanPunishmentService {
     public BanPunishment unban(@NonNull UUID targetId, UUID pardonerId, String reason) {
         this.writeLock.lock();
         try {
-            var latestUnpardonedBanPunishment = this.repository.findLatestActiveBanByTargetId(targetId);
-            if (latestUnpardonedBanPunishment.isEmpty()) {
+            var latestActiveBanPunishment = this.repository.findLatestActiveBanByTargetId(targetId);
+            if (latestActiveBanPunishment.isEmpty()) {
                 throw new BanException(BanException.Reason.NOT_BANNED);
             }
-            var updatedUnpardonedBanPunishment = latestUnpardonedBanPunishment.get().toBuilder()
+            var updatedLatestActiveBanPunishment = latestActiveBanPunishment.get().toBuilder()
                 .pardoned(true).pardonerId(pardonerId).pardonReason(reason)
                 .build();
-            this.repository.update(updatedUnpardonedBanPunishment);
-            return updatedUnpardonedBanPunishment;
+            this.repository.update(updatedLatestActiveBanPunishment);
+            return updatedLatestActiveBanPunishment;
         } finally {
             this.writeLock.unlock();
         }

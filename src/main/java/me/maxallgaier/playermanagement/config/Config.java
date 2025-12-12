@@ -12,6 +12,6 @@ public interface Config {
     MessagesConfig messagesConfig();
 
     default boolean isUpToDate() {
-        return this.version().equals(CURRENT_VERSION);
+        return CURRENT_VERSION.equals(this.version());
     }
 }

@@ -11,4 +11,10 @@ public interface MessagesConfig {
     String playerAlreadyBannedError(String target);
     String playerIsNotBannedError(String target);
     String banScreen(String duration);
+
+    String playerMuted(String target, String issuer, String reason);
+    String playerUnmuted(String target, String issuer, String reason);
+    String playerAlreadyMutedError(String target);
+    String playerIsNotMutedError(String target);
+    String mutedMessage(String duration);
 }

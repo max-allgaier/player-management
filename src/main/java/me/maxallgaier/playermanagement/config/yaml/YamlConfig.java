@@ -31,7 +31,7 @@ public final class YamlConfig implements Config {
 
     @Override
     public String version() {
-        return this.yamlConfig.getString("version");
+        return this.yamlConfig.getString("version", "");
     }
 
     @Override
